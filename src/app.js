@@ -86,7 +86,7 @@ app.use("/api", apiLimiter);
 app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Server is running",
+    message: "Server is runningggg",
     timestamp: new Date().toISOString(),
   });
 });
