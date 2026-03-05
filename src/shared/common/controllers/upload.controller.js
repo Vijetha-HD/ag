@@ -1,0 +1,102 @@
+/**
+ * Upload Controller
+ * Handles image upload endpoints
+ */
+import { uploadImage, uploadMultipleImages, uploadAudio } from '../utils/s3Upload.js';
+import { asyncHandler } from '../utils/errorHandler.js';
+
+/**
+ * @route   POST /api/upload/image
+ * @desc    Upload single image
+ * @access  Private (Seller/Admin only)
+ */
+export const uploadSingleImage = asyncHandler(async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      error: 'No image file provided',
+    });
+  }
+
+  const folder = req.body.folder || 'laptops/products';
+
+  const account = 'laptop';
+
+  const result = await uploadImage(req.file.buffer, folder, {
+    account,
+    contentType: req.file.mimetype
+  });
+
+  res.status(200).json({
+    success: true,
+    data: {
+      image: result,
+    },
+  });
+});
+
+/**
+ * @route   POST /api/upload/images
+ * @desc    Upload multiple images
+ * @access  Private (Seller/Admin only)
+ */
+export const uploadMultipleImage = asyncHandler(async (req, res, next) => {
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: 'No image files provided',
+    });
+  }
+
+  const folder = req.body.folder || 'laptops/products';
+
+  const account = 'laptop';
+
+  // For S3 upload, we pass the file objects (with mimetype) OR buffers.
+  // Our updated s3Upload.js handles file objects to extract mimetype if available.
+  // But uploadMultipleImages in s3Upload.js expects an array.
+  // We pass req.files directly as it matches the expectations better (it has buffer and mimetype).
+
+  const results = await uploadMultipleImages(req.files, folder, {
+    account
+  });
+
+  res.status(200).json({
+    success: true,
+    count: results.length,
+    data: {
+      images: results,
+    },
+  });
+});
+
+/**
+ * @route   POST /api/upload/audio
+ * @desc    Upload single audio file (for voice messages)
+ * @access  Private
+ */
+export const uploadSingleAudio = asyncHandler(async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      error: 'No audio file provided',
+    });
+  }
+
+  const folder = req.body.folder || 'laptops/complaints/voice';
+
+  const account = 'laptop';
+
+  const result = await uploadAudio(req.file.buffer, folder, {
+    account,
+    contentType: req.file.mimetype
+  });
+
+  res.status(200).json({
+    success: true,
+    data: {
+      audio: result,
+    },
+  });
+});
+///////
