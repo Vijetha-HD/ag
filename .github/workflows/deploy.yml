@@ -24,7 +24,7 @@ jobs:
             set -e
 
             echo "📂 Go to project"
-            cd ~/ag-backend
+            cd ~/ag
 
             echo "🔁 Ensure GitHub SSH remote"
             git remote set-url origin https://github.com/Vijetha-HD/ag.git
