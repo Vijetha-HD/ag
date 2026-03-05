@@ -24,10 +24,10 @@ jobs:
             set -e
 
             echo "📂 Go to project"
-            cd ~/brightLaptopBackend
+            cd ~/ag-backend
 
             echo "🔁 Ensure GitHub SSH remote"
-            git remote set-url origin git@github.com:kodstechnologies/brightLaptopBackend.git
+            git remote set-url origin https://github.com/Vijetha-HD/ag.git
 
             echo "⬇️ Pulling latest code"
             git fetch origin
@@ -41,7 +41,7 @@ jobs:
             npm install --production
 
             echo "🚀 Restarting PM2"
-            pm2 restart bright-backend --update-env || pm2 start server.js --name bright-backend
+            pm2 restart ag-backend --update-env || pm2 start server.js --name ag-backend
             pm2 save
 
             echo "✅ Deployment completed successfully!"
